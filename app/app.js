@@ -16,11 +16,16 @@ let storage = multer.diskStorage({
     },
     filename: (req, file, cb) => {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        // TODO improve method of setting filetype as csv
-        cb(null, file.fieldname + '-' + uniqueSuffix + '.csv');
+        cb(null, file.fieldname + '-'
+           + uniqueSuffix
+           // Add extension of original uploaded file
+           + path.extname(file.originalname)
+           );
     },
+    mimetype: 'csv',
     fileFilter: (req, file, cb) => {
         let extension = path.extname(file.originalname);
+        // Qualify extension of upload
         if (extension !== '.csv' && extension !== 'xlsx') {
             return cb(new Error('Only speadsheet files are allowed'))
         }
